@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Task Dashboard</h2>
+
+  <!-- AI Toggle -->
+  <label style="font-size:13px; display:block; margin-bottom:8px;">
+    <input type="checkbox" id="aiToggle" checked>
+    Enable AI assistance
+  </label>
+
+  <!-- Language -->
+  <select id="langSelect">
+    <option value="English">English</option>
+    <option value="Hindi">Hindi</option>
+    <option value="Kannada">Kannada</option>
+    <option value="French">French</option>
+    <option value="Spanish">Spanish</option>
+  </select>
+
+  <!-- Title -->
+  <input
+    id="title"
+    placeholder="Task title"
+    onblur="getAIDescription()"
+    onkeydown="if(event.key==='Enter'){ getAIDescription(true); }"
+  />
+
+  <!-- Description -->
+  <textarea
+    id="desc"
+    placeholder="Task description (AI generated, editable)"
+  ></textarea>
+
+  <!-- AI Buttons -->
+  <div id="aiControls" style="display:none; margin-bottom:10px;">
+    <button onclick="acceptAIDescription()">Accept</button>
+    <button onclick="regenerateAIDescription()">Regenerate</button>
+  </div>
+
+  <!-- AI Status -->
+  <div
+    id="aiSuggestion"
+    style="font-size:13px;color:#4f46e5;margin-bottom:10px;">
+  </div>
+
+  <!-- Add -->
+  <button onclick="addTask()">Add Task</button>
+
+  <hr style="margin:20px 0;">
+
+  <!-- Task List -->
+  <ul id="tasksEl"></ul>
+
+  <!-- Logout -->
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <h3>Edit Task</h3>
+    <input id="modalTitle">
+    <textarea id="modalDesc"></textarea>
+
+    <div style="margin-top:10px;">
+      <button onclick="saveEdit()">Save</button>
+      <button onclick="closeModal()" style="background:#6b7280;">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  loadTasks();
+</script>
+
+</body>
+</html>
