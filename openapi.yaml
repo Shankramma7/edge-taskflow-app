@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Edge Taskflow API
+  version: 1.0.0
+
+servers:
+  - url: https://edge.in-nexarq.cftenant.com
+
+components:
+  securitySchemes:
+    AuthToken:
+      type: apiKey
+      in: header
+      name: Authorization
+
+paths:
+
+  /api/auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Registered
+
+  /api/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Token returned
+
+  /api/auth/logout:
+    post:
+      summary: Logout
+      security:
+        - AuthToken: []
+      responses:
+        "200":
+          description: Logged out
+
+  /api/tasks:
+    post:
+      summary: Create task
+      security:
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Task created
+
+    get:
+      summary: Get tasks
+      security:
+        - AuthToken: []
+      responses:
+        "200":
+          description: Task list
+
+  /api/tasks/{id}:
+    put:
+      summary: Update task
+      security:
+        - AuthToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Updated
+
+    delete:
+      summary: Delete task
+      security:
+        - AuthToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+
+  /api/ai/suggest:
+    post:
+      summary: AI tag suggestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [description]
+              properties:
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Suggestion returned
+
+  /api/ai/describe:
+    post:
+      summary: AI description generator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, language]
+              properties:
+                title:
+                  type: string
+                language:
+                  type: string
+      responses:
+        "200":
+          description: Description returned
