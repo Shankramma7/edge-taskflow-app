@@ -23,6 +23,12 @@ async function register() {
 }
 
 async function login() {
+	  const token = document.querySelector('[name="cf-turnstile-response"]').value;
+
+  if (!token) {
+    alert("Please complete verification");
+    return;
+  }
   const res = await fetch(API + "/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
