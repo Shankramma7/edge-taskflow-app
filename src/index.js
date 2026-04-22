@@ -89,7 +89,25 @@ export default {
 
     // LOGIN
     if (url.pathname === "/api/auth/login" && method === "POST") {
-      const { email, password } = await req.json();
+		const { email, password, token } = await req.json(); // ✅ get token from request
+
+  // 🚨 Step 1: Verify Turnstile token
+  const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: `secret=${env.TURNSTILE_SECRET}&response=${token}`
+  });
+
+  const verifyData = await verifyRes.json();
+
+  if (!verifyData.success) {
+    return Response.json(
+      { error: "Turnstile verification failed ❌" },
+      { status: 403, headers }
+    );
+  }
       const hashed = await hashPassword(password);
 		 const token = document.querySelector('[name="cf-turnstile-response"]').value;
 
