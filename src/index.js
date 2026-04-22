@@ -91,6 +91,7 @@ export default {
     if (url.pathname === "/api/auth/login" && method === "POST") {
       const { email, password } = await req.json();
       const hashed = await hashPassword(password);
+		 const token = document.querySelector('[name="cf-turnstile-response"]').value;
 
       const user = await env.edge_taskflow_db
         .prepare("SELECT id FROM users WHERE email=? AND password=?")
@@ -100,7 +101,7 @@ export default {
       if (!user) {
         return Response.json({ error: "Invalid credentials" }, { status: 401, headers });
       }
-
+		
       const token = crypto.randomUUID();
       await env.TF_SESSIONS.put(token, String(user.id), { expirationTtl: 3600 });
 
