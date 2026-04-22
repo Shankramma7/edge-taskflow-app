@@ -3,7 +3,15 @@
   <h2>Login</h2>
   <input id="email" placeholder="Email">
   <input id="password" type="password">
+	<div
+  class="cf-turnstile"
+  data-sitekey="<YOUR-SITE-KEY>"
+  data-theme="light"
+  data-size="normal"
+  data-callback="onSuccess"
+></div>
   <button onclick="login()">Login</button>
+	<div class="cf-turnstile" data-sitekey="0x4AAAAAADBCfwY8Cp8EbOfM"></div>
   <a href="register.html">Register</a>
 	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </div>
