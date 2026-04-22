@@ -88,10 +88,53 @@ export default {
 }
 
     // LOGIN
-    if (url.pathname === "/api/auth/login" && method === "POST") {
-		const { email, password, token } = await req.json(); // ✅ get token from request
+  //   if (url.pathname === "/api/auth/login" && method === "POST") {
+		// const { email, password, token } = await req.json(); // ✅ get token from request
 
-  // 🚨 Step 1: Verify Turnstile token
+  // // 🚨 Step 1: Verify Turnstile token
+  // const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded"
+  //   },
+  //   body: `secret=${env.TURNSTILE_SECRET}&response=${token}`
+  // });
+
+  // const verifyData = await verifyRes.json();
+
+  // if (!verifyData.success) {
+  //   return Response.json(
+  //     { error: "Turnstile verification failed ❌" },
+  //     { status: 403, headers }
+  //   );
+  // }
+  //     const hashed = await hashPassword(password);
+		//  const token = document.querySelector('[name="cf-turnstile-response"]').value;
+
+  //     const user = await env.edge_taskflow_db
+  //       .prepare("SELECT id FROM users WHERE email=? AND password=?")
+  //       .bind(email, hashed)
+  //       .first();
+
+  //     if (!user) {
+  //       return Response.json({ error: "Invalid credentials" }, { status: 401, headers });
+  //     }
+		
+  //     const token = crypto.randomUUID();
+  //     await env.TF_SESSIONS.put(token, String(user.id), { expirationTtl: 3600 });
+
+  //     return Response.json({ token }, { headers });
+  //   }
+//login
+	  if (url.pathname === "/api/auth/login" && method === "POST") {
+
+  const { email, password, token } = await req.json(); 
+  // token = Turnstile token ✅
+
+  // 🚨 REMOVE THIS LINE (WRONG)
+  // const token = document.querySelector(...)
+
+  // 🔐 Verify Turnstile
   const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
     method: "POST",
     headers: {
@@ -108,24 +151,31 @@ export default {
       { status: 403, headers }
     );
   }
-      const hashed = await hashPassword(password);
-		 const token = document.querySelector('[name="cf-turnstile-response"]').value;
 
-      const user = await env.edge_taskflow_db
-        .prepare("SELECT id FROM users WHERE email=? AND password=?")
-        .bind(email, hashed)
-        .first();
+  // ✅ Login logic
+  const hashed = await hashPassword(password);
 
-      if (!user) {
-        return Response.json({ error: "Invalid credentials" }, { status: 401, headers });
-      }
-		
-      const token = crypto.randomUUID();
-      await env.TF_SESSIONS.put(token, String(user.id), { expirationTtl: 3600 });
+  const user = await env.edge_taskflow_db
+    .prepare("SELECT id FROM users WHERE email=? AND password=?")
+    .bind(email, hashed)
+    .first();
 
-      return Response.json({ token }, { headers });
-    }
+  if (!user) {
+    return Response.json(
+      { error: "Invalid credentials" },
+      { status: 401, headers }
+    );
+  }
 
+  // ✅ Rename this (IMPORTANT)
+  const sessionToken = crypto.randomUUID();
+
+  await env.TF_SESSIONS.put(sessionToken, String(user.id), {
+    expirationTtl: 3600
+  });
+
+  return Response.json({ token: sessionToken }, { headers });
+}
     // LOGOUT
     if (url.pathname === "/api/auth/logout" && method === "POST") {
       const token = req.headers.get("Authorization");
