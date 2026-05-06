@@ -1,0 +1,60 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "edge-taskflow-app",
+  "main": "src/index.js",
+  "compatibility_date": "2025-12-19",
+
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+
+  "assets": {
+    "directory": "./public"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  "d1_databases": [
+    {
+      "binding": "edge_taskflow_db",
+      "database_name": "edge_taskflow_db",
+      "database_id": "77607fd7-0e97-4cc2-bd45-94440d208115"
+    }
+  ],
+
+  "kv_namespaces": [
+    {
+      "binding": "TF_SESSIONS",
+      "id": "799d7a4e6400423ba87f72d3cec53dc3"
+    }
+  ],
+
+  "ai": {
+    "binding": "AI",
+	"remote": true
+  }
+
+  /**
+   * Smart Placement
+   * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+   */
+  // "placement": { "mode": "smart" }
+
+  /**
+   * Environment Variables
+   * Use secrets for sensitive values
+   */
+  // "vars": { "MY_VARIABLE": "production_value" }
+
+  /**
+   * Service Bindings
+   */
+  // "services": []
+}
