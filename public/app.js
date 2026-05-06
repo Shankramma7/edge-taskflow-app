@@ -11,12 +11,9 @@ if (!localStorage.getItem("token") && location.pathname.includes("dashboard")) {
 /* ================= AUTH ================= */
 
 async function register() {
-  const token = document.querySelector('[name="cf-turnstile-response"]').value;
+  const token = document.querySelector('[name="cf-turnstile-response"]')?.value || "";
 
-  if (!token) {
-    alert("Please complete verification");
-    return;
-  }
+  /* 🔐 Turnstile is optional — backend verification is currently disabled */
 
   const res = await fetch(API + "/auth/register", {
     method: "POST",
@@ -39,12 +36,9 @@ async function register() {
 }
 
 async function login() {
-  const token = document.querySelector('[name="cf-turnstile-response"]').value;
+  const token = document.querySelector('[name="cf-turnstile-response"]')?.value || "";
 
-  if (!token) {
-    alert("Please complete verification");
-    return;
-  }
+  /* 🔐 Turnstile is optional — backend verification is currently disabled */
 
   const res = await fetch(API + "/auth/login", {
     method: "POST",
